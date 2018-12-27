@@ -55,4 +55,11 @@ export declare class TheKeys {
      * @returns The json response from the gateway
      */
     private apiPost;
+    /**
+     * Throw an error if data is empty
+     *
+     * @param data The variable to test
+     * @param message The throw message
+     */
+    private requireNotEmpty;
 }

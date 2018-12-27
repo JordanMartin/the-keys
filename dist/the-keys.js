@@ -28,6 +28,10 @@ var TheKeys = /** @class */ (function () {
         this.gatewaySecret = gatewaySecret;
         this.gatewayHost = gatewayHost;
         this.gatewayPort = gatewayPort;
+        this.requireNotEmpty(lockId, 'The lockId must be defined');
+        this.requireNotEmpty(gatewaySecret, 'The gatewaySecret must be defined');
+        this.requireNotEmpty(gatewayHost, 'The gatewayHost must be defined');
+        this.requireNotEmpty(gatewayPort, 'The gatewayPort must be defined');
     }
     /**
      * Open the lock
@@ -117,6 +121,17 @@ var TheKeys = /** @class */ (function () {
             req.write(authData);
             req.end();
         });
+    };
+    /**
+     * Throw an error if data is empty
+     *
+     * @param data The variable to test
+     * @param message The throw message
+     */
+    TheKeys.prototype.requireNotEmpty = function (data, message) {
+        if (!data) {
+            throw new Error(message);
+        }
     };
     return TheKeys;
 }());

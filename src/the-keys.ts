@@ -32,7 +32,12 @@ export class TheKeys {
 		private gatewaySecret: string,
 		private gatewayHost: string,
 		private gatewayPort: number = 80
-	) { }
+	) {
+		this.requireNotEmpty(lockId, 'The lockId must be defined');
+		this.requireNotEmpty(gatewaySecret, 'The gatewaySecret must be defined');
+		this.requireNotEmpty(gatewayHost, 'The gatewayHost must be defined');
+		this.requireNotEmpty(gatewayPort, 'The gatewayPort must be defined');
+	}
 
 	/**
 	 * Open the lock
@@ -133,5 +138,17 @@ export class TheKeys {
 			req.write(authData);
 			req.end();
 		});
+	}
+
+	/**
+	 * Throw an error if data is empty
+	 *
+	 * @param data The variable to test
+	 * @param message The throw message
+	 */
+	private requireNotEmpty(data: any, message: string): void {
+		if (!data) {
+			throw new Error(message);
+		}
 	}
 }

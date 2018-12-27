@@ -1,8 +1,8 @@
 {
   "name": "the-keys",
   "version": "1.0.0",
-  "description": "Control a connected lock The Keys",
-  "keywords": ["The Keys", "Lock", "Home Automation"],
+  "description": "Control the smart lock The Keys",
+  "keywords": ["The Keys", "Smart Lock", "Home Automation"],
   "author": "Jordan Martin",
   "homepage": "https://github.com/JordanMartin/the-keys/blob/master/README.md",
   "repository": {

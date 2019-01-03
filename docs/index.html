@@ -64,6 +64,40 @@
 	<div class="row">
 		<div class="col-8 col-content">
 			<div class="tsd-panel tsd-typography">
+				<h1 id="the-keys">The Keys</h1>
+				<p>This API allows to controll a smart plug The Keys.</p>
+				<h2 id="usage">Usage</h2>
+				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> TheKeys = <span class="hljs-built_in">require</span>(<span class="hljs-string">'the-keys'</span>).TheKeys;
+
+<span class="hljs-keyword">const</span> gatewayHost = <span class="hljs-string">'192.168.1.15'</span>;
+<span class="hljs-keyword">const</span> gatewayCode = <span class="hljs-string">'xxxxxxxxxxxxx'</span>;
+<span class="hljs-keyword">const</span> lockId = <span class="hljs-string">'1234'</span>;
+<span class="hljs-keyword">const</span> door = <span class="hljs-keyword">new</span> TheKeys(lockId, gatewayCode,  gatewayHost);
+
+<span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">main</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> door.lock();
+    <span class="hljs-keyword">const</span> status = <span class="hljs-keyword">await</span> door.status();
+    <span class="hljs-built_in">console</span>.log(res, status);
+}
+
+main();</code></pre>
+				<h2 id="api">API</h2>
+				<h3 id="const-door-new-thekeys-lockerid-gatewaycode-gatewayhost-gatewayport-"><code>const door = new TheKeys(lockerId, gatewayCode, gatewayHost[, gatewayPort])</code></h3>
+				<pre><code class="language-javascript">{ <span class="hljs-attr">status</span>: <span class="hljs-string">'ok'</span>, <span class="hljs-attr">code</span>: <span class="hljs-number">0</span> }</code></pre>
+				<h3 id="door-lock-"><code>door.lock()</code></h3>
+				<pre><code class="language-javascript">{ <span class="hljs-attr">status</span>: <span class="hljs-string">'ok'</span>, <span class="hljs-attr">code</span>: <span class="hljs-number">0</span> }</code></pre>
+				<h3 id="door-unlock-"><code>door.unlock()</code></h3>
+				<pre><code class="language-javascript">{ <span class="hljs-attr">status</span>: <span class="hljs-string">'ok'</span>, <span class="hljs-attr">code</span>: <span class="hljs-number">0</span> }</code></pre>
+				<h3 id="door-status-"><code>door.status()</code></h3>
+				<pre><code class="language-javascript">{
+    <span class="hljs-attr">status</span>: <span class="hljs-string">'Door closed'</span>,
+    <span class="hljs-attr">code</span>: <span class="hljs-number">49</span>,
+    <span class="hljs-attr">id</span>: xxxx,
+    <span class="hljs-attr">version</span>: <span class="hljs-number">59</span>,
+    <span class="hljs-attr">position</span>: <span class="hljs-number">4</span>,
+    <span class="hljs-attr">rssi</span>: <span class="hljs-number">-70</span>,
+    <span class="hljs-attr">battery</span>: <span class="hljs-number">7512</span> 
+}</code></pre>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -74,9 +108,6 @@
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_index_.html">"index"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_main_.html">"main"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_the_keys_.html">"the-<wbr>keys"</a>

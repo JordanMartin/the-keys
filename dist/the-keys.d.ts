@@ -6,6 +6,8 @@ export declare class TheKeys {
     private gatewaySecret;
     private gatewayHost;
     private gatewayPort;
+    private readonly BATTERY_MIN_LEVEL_MV;
+    private readonly BATTERY_MAX_LEVEL_MV;
     /**
      * Build a new TheKeys
      *
@@ -33,6 +35,13 @@ export declare class TheKeys {
      * @returns A promise with the json response from the gateway
      */
     status(): Promise<any>;
+    /**
+     * Get the battery percentage
+     *
+     * @param batteryMv The power of the battery in mV
+     * @returns The battery percentage
+     */
+    private getBatteryLevel;
     /**
      * Generate the authentification string
      *

@@ -50,3 +50,5 @@ main();
     battery: 7512 
 }
 ```
+
+> The field `battery` is the power in mV. Interpretation : 6200mV => 0% and 8000mV => 100%.

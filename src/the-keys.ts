@@ -19,6 +19,9 @@ const log = createLogger({
  */
 export class TheKeys {
 
+	private readonly BATTERY_MIN_LEVEL_MV = 6200;
+	private readonly BATTERY_MAX_LEVEL_MV = 8000;
+
 	/**
 	 * Build a new TheKeys
 	 * 
@@ -64,9 +67,28 @@ export class TheKeys {
 	 * 
 	 * @returns A promise with the json response from the gateway
 	 */
-	public status(): Promise<any> {
+	public async status() {
 		log.info('Get status...');
-		return this.apiPost('/locker_status');
+		return this.apiPost('/locker_status')
+			// Compte battery level in percentage
+			.then((res: any) => {
+				if (res && res.battery) {
+					res.batteryLevel = this.getBatteryLevel(res.battery);
+				}
+				return res;
+			});
+	}
+
+	/**
+	 * Get the battery percentage
+	 * 
+	 * @param batteryMv The power of the battery in mV
+	 * @returns The battery percentage
+	 */
+	private getBatteryLevel(batteryMv: any): Number {
+		const level = (batteryMv - this.BATTERY_MIN_LEVEL_MV) 
+						/ (this.BATTERY_MAX_LEVEL_MV - this.BATTERY_MIN_LEVEL_MV);
+		return Math.floor(level * 10000) / 100;
 	}
 
 	/**

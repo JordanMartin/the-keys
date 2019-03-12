@@ -24,9 +24,6 @@ main();
 ## API
 
 ### `const door = new TheKeys(lockerId, gatewayCode, gatewayHost[, gatewayPort])`
-```javascript
-{ status: 'ok', code: 0 }
-```
 
 ### `door.lock()`
 ```javascript

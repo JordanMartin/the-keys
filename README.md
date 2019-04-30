@@ -2,6 +2,7 @@
 
 This API allows to controll and get status of the smart lock [`The Keys`](https://www.the-keys.eu).
 
+Go to https://api.the-keys.fr to get the lockerId and the code of the gateway.
 
 ## Usage
 ```javascript

@@ -1,6 +1,6 @@
 # The Keys
 
-This API allows to controll a smart plug The Keys.
+This API allows to controll and get status of the smart lock [`The Keys`](https://www.the-keys.eu).
 
 
 ## Usage

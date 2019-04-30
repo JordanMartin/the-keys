@@ -1,5 +1,5 @@
 {
-  "name": "the-keys",
+  "name": "tk-api",
   "version": "1.0.0",
   "description": "Control the smart lock The Keys",
   "keywords": [
@@ -17,12 +17,13 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "dependencies": {
-    "@types/node": "^10.12.11",
-    "winston": "^3.1.0"
+    "debug": "^4.1.1"
   },
   "devDependencies": {
-    "typescript": "^3.2.1",
-    "typedoc": "^0.13.0"
+    "@types/node": "^10.12.11",
+    "@types/debug": "^4.1.4",
+    "typedoc": "^0.13.0",
+    "typescript": "^3.2.1"
   },
   "scripts": {
     "build": "tsc",

@@ -1,18 +1,8 @@
 import * as crypto from 'crypto';
 import * as http from 'http';
-import { createLogger, transports, format } from 'winston';
+import Debug from 'debug';
 
-const log = createLogger({
-	level: 'debug',
-	format: format.combine(
-		format.colorize(),
-		format.splat(),
-		format.simple()
-	),
-	transports: [
-		new transports.Console()
-	]
-});
+const debug = Debug('tk-api');
 
 /**
  * Control the smart lock The Keys
@@ -48,7 +38,7 @@ export class TheKeys {
 	 * @returns A promise with the response from the gateway
 	 */
 	public unlock(): Promise<any> {
-		log.info('Unlocking...');
+		debug('Unlocking...');
 		return this.apiPost('/open');
 	}
 
@@ -58,7 +48,7 @@ export class TheKeys {
 	 * @returns A promise wiht the response from the gateway
 	 */
 	public lock(): Promise<any> {
-		log.info('Locking...');
+		debug('Locking...');
 		return this.apiPost('/close');
 	}
 
@@ -68,7 +58,7 @@ export class TheKeys {
 	 * @returns A promise with the json response from the gateway
 	 */
 	public async status() {
-		log.info('Get status...');
+		debug('Get status...');
 		return this.apiPost('/locker_status')
 			// Compte battery level in percentage
 			.then((res: any) => {
@@ -125,7 +115,7 @@ export class TheKeys {
 	private apiPost(path: string) {
 		return new Promise((resolve, reject) => {
 
-			log.debug('> POST ' + this.gatewayHost + path)
+			debug('> POST ' + this.gatewayHost + path)
 
 			// Get the auth data
 			const authData = this.generateAuth();
@@ -142,7 +132,7 @@ export class TheKeys {
 			};
 
 			const req = http.request(options, (res) => {
-				log.debug(`< ${res.statusCode} ${res.statusMessage}`);
+				debug(`< ${res.statusCode} ${res.statusMessage}`);
 
 				const chunks: any[] = [];
 				res.on('data', chunk => chunks.push(chunk));
@@ -153,7 +143,7 @@ export class TheKeys {
 			});
 
 			req.on('error', (err) => {
-				log.error('Request failed', err);
+				debug('Request failed', err);
 				reject(err);
 			});
 

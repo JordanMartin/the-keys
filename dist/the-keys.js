@@ -37,14 +37,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var crypto = require("crypto");
 var http = require("http");
-var winston_1 = require("winston");
-var log = winston_1.createLogger({
-    level: 'debug',
-    format: winston_1.format.combine(winston_1.format.colorize(), winston_1.format.splat(), winston_1.format.simple()),
-    transports: [
-        new winston_1.transports.Console()
-    ]
-});
+var debug_1 = require("debug");
+var debug = debug_1.default('tk-api');
 /**
  * Control the smart lock The Keys
  */
@@ -76,7 +70,7 @@ var TheKeys = /** @class */ (function () {
      * @returns A promise with the response from the gateway
      */
     TheKeys.prototype.unlock = function () {
-        log.info('Unlocking...');
+        debug('Unlocking...');
         return this.apiPost('/open');
     };
     /**
@@ -85,7 +79,7 @@ var TheKeys = /** @class */ (function () {
      * @returns A promise wiht the response from the gateway
      */
     TheKeys.prototype.lock = function () {
-        log.info('Locking...');
+        debug('Locking...');
         return this.apiPost('/close');
     };
     /**
@@ -97,7 +91,7 @@ var TheKeys = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
             return __generator(this, function (_a) {
-                log.info('Get status...');
+                debug('Get status...');
                 return [2 /*return*/, this.apiPost('/locker_status')
                         // Compte battery level in percentage
                         .then(function (res) {
@@ -152,7 +146,7 @@ var TheKeys = /** @class */ (function () {
     TheKeys.prototype.apiPost = function (path) {
         var _this = this;
         return new Promise(function (resolve, reject) {
-            log.debug('> POST ' + _this.gatewayHost + path);
+            debug('> POST ' + _this.gatewayHost + path);
             // Get the auth data
             var authData = _this.generateAuth();
             var options = {
@@ -166,7 +160,7 @@ var TheKeys = /** @class */ (function () {
                 },
             };
             var req = http.request(options, function (res) {
-                log.debug("< " + res.statusCode + " " + res.statusMessage);
+                debug("< " + res.statusCode + " " + res.statusMessage);
                 var chunks = [];
                 res.on('data', function (chunk) { return chunks.push(chunk); });
                 res.on('end', function () {
@@ -175,7 +169,7 @@ var TheKeys = /** @class */ (function () {
                 });
             });
             req.on('error', function (err) {
-                log.error('Request failed', err);
+                debug('Request failed', err);
                 reject(err);
             });
             req.write(authData);

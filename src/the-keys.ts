@@ -53,6 +53,14 @@ export class TheKeys {
 	}
 
 	/**
+	 * @returns A promise with the info from the gateway
+	 */
+	public async info(): Promise<any> {
+		debug('Get infos...');
+		return this.apiPost('/lockers');
+	}
+
+	/**
 	 * Get status of the lock
 	 * 
 	 * @returns A promise with the json response from the gateway
@@ -60,7 +68,7 @@ export class TheKeys {
 	public async status() {
 		debug('Get status...');
 		return this.apiPost('/locker_status')
-			// Compte battery level in percentage
+			// Compute battery level in percentage
 			.then((res: any) => {
 				if (res && res.battery) {
 					res.batteryLevel = this.getBatteryLevel(res.battery);

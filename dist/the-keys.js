@@ -83,6 +83,28 @@ var TheKeys = /** @class */ (function () {
         return this.apiPost('/close');
     };
     /**
+     * @returns A promise with the info from the gateway
+     */
+    TheKeys.prototype.info = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            return __generator(this, function (_a) {
+                debug('Get infos...');
+                return [2 /*return*/, this.apiPost('/lockers')
+                        .then(function (res) {
+                        if (!res || res.status !== 'ok') {
+                            throw res;
+                        }
+                        // filter for the lock
+                        var device = res.devices
+                            .filter(function (device) { return device.identifier === _this.lockId; })[0];
+                        _this.feedBatteryLevel(device);
+                        return device;
+                    })];
+            });
+        });
+    };
+    /**
      * Get status of the lock
      *
      * @returns A promise with the json response from the gateway
@@ -93,15 +115,22 @@ var TheKeys = /** @class */ (function () {
             return __generator(this, function (_a) {
                 debug('Get status...');
                 return [2 /*return*/, this.apiPost('/locker_status')
-                        // Compte battery level in percentage
-                        .then(function (res) {
-                        if (res && res.battery) {
-                            res.batteryLevel = _this.getBatteryLevel(res.battery);
-                        }
-                        return res;
+                        .then(function (device) {
+                        _this.feedBatteryLevel(device);
+                        return device;
                     })];
             });
         });
+    };
+    /**
+     * Add the battery level feed to the object
+     *
+     * @param device Object containing a battery field
+     */
+    TheKeys.prototype.feedBatteryLevel = function (device) {
+        if (device && device.battery) {
+            device.batteryLevel = this.getBatteryLevel(device.battery);
+        }
     };
     /**
      * Get the battery percentage
@@ -160,11 +189,12 @@ var TheKeys = /** @class */ (function () {
                 },
             };
             var req = http.request(options, function (res) {
-                debug("< " + res.statusCode + " " + res.statusMessage);
+                debug('< %s %s', res.statusCode, res.statusMessage);
                 var chunks = [];
                 res.on('data', function (chunk) { return chunks.push(chunk); });
                 res.on('end', function () {
                     var response = Buffer.concat(chunks).toString();
+                    debug(response);
                     resolve(JSON.parse(response));
                 });
             });

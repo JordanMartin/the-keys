@@ -16,7 +16,7 @@ export declare class TheKeys {
      * @param gatewayHost Host or ip of the gateway
      * @param gatewayPort The target port for the gateway (default is 80)
      */
-    constructor(lockId: string, gatewaySecret: string, gatewayHost: string, gatewayPort?: number);
+    constructor(lockId: number, gatewaySecret: string, gatewayHost: string, gatewayPort?: number);
     /**
      * Open the lock
      *
@@ -30,11 +30,21 @@ export declare class TheKeys {
      */
     lock(): Promise<any>;
     /**
+     * @returns A promise with the info from the gateway
+     */
+    info(): Promise<any>;
+    /**
      * Get status of the lock
      *
      * @returns A promise with the json response from the gateway
      */
     status(): Promise<any>;
+    /**
+     * Add the battery level feed to the object
+     *
+     * @param device Object containing a battery field
+     */
+    private feedBatteryLevel;
     /**
      * Get the battery percentage
      *

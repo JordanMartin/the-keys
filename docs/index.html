@@ -65,7 +65,8 @@
 		<div class="col-8 col-content">
 			<div class="tsd-panel tsd-typography">
 				<h1 id="the-keys">The Keys</h1>
-				<p>This API allows to controll a smart plug The Keys.</p>
+				<p>This API allows to controll and get status of the smart lock <a href="https://www.the-keys.eu"><code>The Keys</code></a>.</p>
+				<p>Go to <a href="https://api.the-keys.fr">https://api.the-keys.fr</a> to get the lockerId and the code of the gateway.</p>
 				<h2 id="usage">Usage</h2>
 				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> TheKeys = <span class="hljs-built_in">require</span>(<span class="hljs-string">'the-keys'</span>).TheKeys;
 
@@ -83,23 +84,38 @@
 main();</code></pre>
 				<h2 id="api">API</h2>
 				<h3 id="const-door-new-thekeys-lockerid-gatewaycode-gatewayhost-gatewayport-"><code>const door = new TheKeys(lockerId, gatewayCode, gatewayHost[, gatewayPort])</code></h3>
-				<pre><code class="language-javascript">{ <span class="hljs-attr">status</span>: <span class="hljs-string">'ok'</span>, <span class="hljs-attr">code</span>: <span class="hljs-number">0</span> }</code></pre>
 				<h3 id="door-lock-"><code>door.lock()</code></h3>
 				<pre><code class="language-javascript">{ <span class="hljs-attr">status</span>: <span class="hljs-string">'ok'</span>, <span class="hljs-attr">code</span>: <span class="hljs-number">0</span> }</code></pre>
 				<h3 id="door-unlock-"><code>door.unlock()</code></h3>
 				<pre><code class="language-javascript">{ <span class="hljs-attr">status</span>: <span class="hljs-string">'ok'</span>, <span class="hljs-attr">code</span>: <span class="hljs-number">0</span> }</code></pre>
 				<h3 id="door-status-"><code>door.status()</code></h3>
-				<pre><code class="language-javascript">{
+				<blockquote>
+					<p>Ask the lock&#39;s status via bluetooth communication</p>
+					<pre><code class="language-javascript">{
     <span class="hljs-attr">status</span>: <span class="hljs-string">'Door closed'</span>,
     <span class="hljs-attr">code</span>: <span class="hljs-number">49</span>,
     <span class="hljs-attr">id</span>: xxxx,
     <span class="hljs-attr">version</span>: <span class="hljs-number">59</span>,
     <span class="hljs-attr">position</span>: <span class="hljs-number">4</span>,
     <span class="hljs-attr">rssi</span>: <span class="hljs-number">-70</span>,
-    <span class="hljs-attr">battery</span>: <span class="hljs-number">7512</span> 
+    <span class="hljs-attr">battery</span>: <span class="hljs-number">7044</span>,
+    <span class="hljs-attr">batteryLevel</span>: <span class="hljs-number">46.88</span>
 }</code></pre>
+				</blockquote>
+				<h3 id="door-info-"><code>door.info()</code></h3>
 				<blockquote>
-					<p>The field <code>battery</code> is the power in mV. Interpretation : 6200mV =&gt; 0% and 8000mV =&gt; 100%.</p>
+					<p>This method ask the gateway itself and not the lock. Thsi call is fast and require no bluetooth communication</p>
+					<pre><code class="language-javascript">{
+    <span class="hljs-attr">identifier</span>: xxxx,
+    <span class="hljs-attr">rssi</span>: <span class="hljs-number">-70</span>,
+    <span class="hljs-attr">battery</span>: <span class="hljs-number">7044</span>,
+    <span class="hljs-attr">last_log</span>: <span class="hljs-number">100</span>,
+    <span class="hljs-attr">batteryLevel</span>: <span class="hljs-number">46.88</span>
+}                                       </code></pre>
+				</blockquote>
+				<blockquote>
+					<p>The field <code>battery</code> is the power in mV. Interpretation : 6200mV =&gt; 0% and 8000mV =&gt; 100%
+					The field <code>batteryLevel</code> is a computed field based on the previous interpretation</p>
 				</blockquote>
 			</div>
 		</div>

@@ -37,6 +37,7 @@ main();
 ```
 
 ### `door.status()`
+> Ask the lock's status via bluetooth communication
 ```javascript
 {
     status: 'Door closed',
@@ -45,8 +46,22 @@ main();
     version: 59,
     position: 4,
     rssi: -70,
-    battery: 7512 
+    battery: 7044,
+    batteryLevel: 46.88
 }
 ```
 
-> The field `battery` is the power in mV. Interpretation : 6200mV => 0% and 8000mV => 100%.
+### `door.info()`
+> This method ask the gateway itself and not the lock. Thsi call is fast and require no bluetooth communication
+```javascript
+{
+    identifier: xxxx,
+    rssi: -70,
+    battery: 7044,
+    last_log: 100,
+    batteryLevel: 46.88
+}                                       
+```
+
+> The field `battery` is the power in mV. Interpretation : 6200mV => 0% and 8000mV => 100%
+> The field `batteryLevel` is a computed field based on the previous interpretation

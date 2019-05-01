@@ -21,7 +21,7 @@ export class TheKeys {
 	 * @param gatewayPort The target port for the gateway (default is 80)
 	 */
 	constructor(
-		private lockId: string,
+		private lockId: number,
 		private gatewaySecret: string,
 		private gatewayHost: string,
 		private gatewayPort: number = 80
@@ -57,7 +57,17 @@ export class TheKeys {
 	 */
 	public async info(): Promise<any> {
 		debug('Get infos...');
-		return this.apiPost('/lockers');
+		return this.apiPost('/lockers')
+			.then((res: any) => {
+				if (!res || res.status !== 'ok') {
+					throw res;
+				}
+				// filter for the lock
+				const device = res.devices
+					.filter((device: any) => device.identifier === this.lockId)[0];
+				this.feedBatteryLevel(device);
+				return device;
+			});
 	}
 
 	/**
@@ -68,13 +78,21 @@ export class TheKeys {
 	public async status() {
 		debug('Get status...');
 		return this.apiPost('/locker_status')
-			// Compute battery level in percentage
-			.then((res: any) => {
-				if (res && res.battery) {
-					res.batteryLevel = this.getBatteryLevel(res.battery);
-				}
-				return res;
+			.then((device: any) => {
+				this.feedBatteryLevel(device);
+				return device;
 			});
+	}
+
+	/**
+	 * Add the battery level feed to the object
+	 * 
+	 * @param device Object containing a battery field
+	 */
+	private feedBatteryLevel(device: any): void {
+		if (device && device.battery) {
+			device.batteryLevel = this.getBatteryLevel(device.battery);
+		}
 	}
 
 	/**
@@ -83,9 +101,9 @@ export class TheKeys {
 	 * @param batteryMv The power of the battery in mV
 	 * @returns The battery percentage
 	 */
-	private getBatteryLevel(batteryMv: any): Number {
-		const level = (batteryMv - this.BATTERY_MIN_LEVEL_MV) 
-						/ (this.BATTERY_MAX_LEVEL_MV - this.BATTERY_MIN_LEVEL_MV);
+	private getBatteryLevel(batteryMv: number): Number {
+		const level = (batteryMv - this.BATTERY_MIN_LEVEL_MV)
+			/ (this.BATTERY_MAX_LEVEL_MV - this.BATTERY_MIN_LEVEL_MV);
 		return Math.floor(level * 10000) / 100;
 	}
 
@@ -140,12 +158,13 @@ export class TheKeys {
 			};
 
 			const req = http.request(options, (res) => {
-				debug(`< ${res.statusCode} ${res.statusMessage}`);
+				debug('< %s %s', res.statusCode, res.statusMessage);
 
 				const chunks: any[] = [];
 				res.on('data', chunk => chunks.push(chunk));
 				res.on('end', () => {
 					const response = Buffer.concat(chunks).toString();
+					debug(response);
 					resolve(JSON.parse(response));
 				});
 			});

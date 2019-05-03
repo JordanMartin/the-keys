@@ -170,7 +170,11 @@ export class TheKeys {
 				res.on('end', () => {
 					const response = Buffer.concat(chunks).toString();
 					debug(response);
-					resolve(JSON.parse(response));
+					try {
+                        resolve(JSON.parse(response));
+                    } catch(e) {
+                        reject(new Error('Bad response'));
+                    }
 				});
 			});
 

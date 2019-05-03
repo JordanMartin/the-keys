@@ -98,6 +98,9 @@ var TheKeys = /** @class */ (function () {
                         // filter for the lock
                         var device = res.devices
                             .filter(function (device) { return device.identifier === _this.lockId; })[0];
+                        if (!device) {
+                            throw new Error('Lock not found');
+                        }
                         _this.feedBatteryLevel(device);
                         return device;
                     })];

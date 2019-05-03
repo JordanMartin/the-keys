@@ -65,6 +65,11 @@ export class TheKeys {
 				// filter for the lock
 				const device = res.devices
 					.filter((device: any) => device.identifier === this.lockId)[0];
+
+				if (!device) {
+					throw new Error('Lock not found');
+				}
+
 				this.feedBatteryLevel(device);
 				return device;
 			});

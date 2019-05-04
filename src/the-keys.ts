@@ -2,7 +2,7 @@ import * as crypto from 'crypto';
 import * as http from 'http';
 import Debug from 'debug';
 
-const debug = Debug('tk-api');
+const debug = Debug('the-keys');
 
 /**
  * Control the smart lock The Keys

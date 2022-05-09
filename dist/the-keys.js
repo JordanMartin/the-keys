@@ -1,9 +1,10 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -35,10 +36,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.TheKeys = void 0;
 var crypto = require("crypto");
 var http = require("http");
 var debug_1 = require("debug");
-var debug = debug_1.default('tk-api');
+var debug = (0, debug_1.default)('the-keys');
 /**
  * Control the smart lock The Keys
  */
@@ -59,6 +61,7 @@ var TheKeys = /** @class */ (function () {
         this.gatewayPort = gatewayPort;
         this.BATTERY_MIN_LEVEL_MV = 6200;
         this.BATTERY_MAX_LEVEL_MV = 8000;
+        this.GATEWAY_REQUEST_TIMEOUT = 15000;
         this.requireNotEmpty(lockId, 'The lockId must be defined');
         this.requireNotEmpty(gatewaySecret, 'The gatewaySecret must be defined');
         this.requireNotEmpty(gatewayHost, 'The gatewayHost must be defined');
@@ -112,7 +115,7 @@ var TheKeys = /** @class */ (function () {
      *
      * @returns A promise with the json response from the gateway
      */
-    TheKeys.prototype.status = function () {
+    TheKeys.prototype.lockerStatus = function () {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
             return __generator(this, function (_a) {
@@ -120,6 +123,22 @@ var TheKeys = /** @class */ (function () {
                 return [2 /*return*/, this.apiPost('/locker_status')
                         .then(function (device) {
                         _this.feedBatteryLevel(device);
+                        return device;
+                    })];
+            });
+        });
+    };
+    /**
+     * Get status of the gateway
+     *
+     * @returns A promise with the json response from the gateway
+     */
+    TheKeys.prototype.status = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                debug('Get status...');
+                return [2 /*return*/, this.apiPost('/status')
+                        .then(function (device) {
                         return device;
                     })];
             });
@@ -155,7 +174,7 @@ var TheKeys = /** @class */ (function () {
     TheKeys.prototype.generateAuth = function () {
         var timestamp = Math.floor(new Date().getTime() / 1000).toString();
         var hash = this.hmacSha256(timestamp, this.gatewaySecret);
-        return "identifier=" + this.lockId + "&ts=" + timestamp + "&hash=" + hash;
+        return "identifier=".concat(this.lockId, "&ts=").concat(timestamp, "&hash=").concat(hash);
     };
     /**
      * Compute the HMAC-SHA256 in base64
@@ -190,6 +209,7 @@ var TheKeys = /** @class */ (function () {
                     'Content-Type': 'application/x-www-form-urlencoded',
                     'Content-Length': Buffer.byteLength(authData)
                 },
+                timeout: _this.GATEWAY_REQUEST_TIMEOUT
             };
             var req = http.request(options, function (res) {
                 debug('< %s %s', res.statusCode, res.statusMessage);
@@ -209,6 +229,11 @@ var TheKeys = /** @class */ (function () {
             req.on('error', function (err) {
                 debug('Request failed', err);
                 reject(err);
+            });
+            req.on('timeout', function () {
+                debug('request timeout (' + _this.GATEWAY_REQUEST_TIMEOUT + 'ms)');
+                req.abort();
+                reject(new Error('timeout'));
             });
             req.write(authData);
             req.end();

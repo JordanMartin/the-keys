@@ -11,6 +11,7 @@ export class TheKeys {
 
 	private readonly BATTERY_MIN_LEVEL_MV = 6200;
 	private readonly BATTERY_MAX_LEVEL_MV = 8000;
+	private readonly GATEWAY_REQUEST_TIMEOUT = 15000;
 
 	/**
 	 * Build a new TheKeys
@@ -80,11 +81,24 @@ export class TheKeys {
 	 * 
 	 * @returns A promise with the json response from the gateway
 	 */
-	public async status() {
+	public async lockerStatus() {
 		debug('Get status...');
 		return this.apiPost('/locker_status')
 			.then((device: any) => {
 				this.feedBatteryLevel(device);
+				return device;
+			});
+	}
+
+	/**
+	 * Get status of the gateway
+	 * 
+	 * @returns A promise with the json response from the gateway
+	 */
+	 public async status() {
+		debug('Get status...');
+		return this.apiPost('/status')
+			.then((device: any) => {
 				return device;
 			});
 	}
@@ -160,6 +174,7 @@ export class TheKeys {
 					'Content-Type': 'application/x-www-form-urlencoded',
 					'Content-Length': Buffer.byteLength(authData)
 				},
+				timeout: this.GATEWAY_REQUEST_TIMEOUT
 			};
 
 			const req = http.request(options, (res) => {
@@ -171,16 +186,22 @@ export class TheKeys {
 					const response = Buffer.concat(chunks).toString();
 					debug(response);
 					try {
-                        resolve(JSON.parse(response));
-                    } catch(e) {
-                        reject(new Error('Bad response'));
-                    }
+						resolve(JSON.parse(response));
+					} catch (e) {
+						reject(new Error('Bad response'));
+					}
 				});
 			});
 
 			req.on('error', (err) => {
 				debug('Request failed', err);
 				reject(err);
+			});
+
+			req.on('timeout', () => {
+				debug('request timeout (' + this.GATEWAY_REQUEST_TIMEOUT + 'ms)');
+				req.abort();
+				reject(new Error('timeout'));
 			});
 
 			req.write(authData);

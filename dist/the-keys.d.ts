@@ -8,6 +8,7 @@ export declare class TheKeys {
     private gatewayPort;
     private readonly BATTERY_MIN_LEVEL_MV;
     private readonly BATTERY_MAX_LEVEL_MV;
+    private readonly GATEWAY_REQUEST_TIMEOUT;
     /**
      * Build a new TheKeys
      *
@@ -35,6 +36,12 @@ export declare class TheKeys {
     info(): Promise<any>;
     /**
      * Get status of the lock
+     *
+     * @returns A promise with the json response from the gateway
+     */
+    lockerStatus(): Promise<any>;
+    /**
+     * Get status of the gateway
      *
      * @returns A promise with the json response from the gateway
      */

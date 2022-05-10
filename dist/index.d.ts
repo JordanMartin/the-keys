@@ -1,2 +1,3 @@
 import { TheKeys } from './the-keys';
-export { TheKeys };
+import { TheKeysRemote } from './the-keys-remote';
+export { TheKeys, TheKeysRemote };
